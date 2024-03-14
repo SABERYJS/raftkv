@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option go_package = "raftapp/protos";
+
+service ProtocolsService {
+  rpc CreateKey(CreateKeyRequest) returns (CreateKeyResponse) {}
+  rpc QueryKey(QueryKeyRequest) returns (QueryKeyResponse) {}
+}
+
+
+message KvPair{
+  string key=1;
+  string value=2;
+}
+
+message CreateKeyRequest{
+  KvPair data=1;
+}
+
+
+message CreateKeyResponse{
+  int32 ret=1;
+  int32 keysCnt=2;
+}
+
+message QueryKeyRequest{
+  string key=1;
+}
+
+message QueryKeyResponse{
+  int32 ret=1;
+  string value=2;
+}
