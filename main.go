@@ -122,11 +122,11 @@ func creatRaft(saddr string, kvstore *kvStore, raftTransport *RaftBridge) (*raft
 						ID:       raft.ServerID("r2"),
 						Address:  raft.ServerAddress("127.0.0.1:8002"),
 					},
-					/*{
+					{
 						Suffrage: raft.Voter,
 						ID:       raft.ServerID("r3"),
 						Address:  raft.ServerAddress("127.0.0.1:8003"),
-					},*/
+					},
 				},
 			})
 			if future.Error() != nil {

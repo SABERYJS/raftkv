@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/hashicorp/raft"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -169,11 +168,11 @@ func (rb *RaftBridge) TimeoutNow(id raft.ServerID, target raft.ServerAddress, ar
 }
 
 func (rb *RaftBridge) handleGrpcRequest(command interface{}, data io.Reader) (interface{}, error) {
-	bytes, err := json.Marshal(command)
+	/*bytes, err := json.Marshal(command)
 	if err != nil {
 		return nil, err
-	}
-	logger.Info("handlerpc", zap.String("cmd", string(bytes)))
+	}*/
+	//logger.Info("handlerpc", zap.String("cmd", string(bytes)))
 	ch := make(chan raft.RPCResponse, 1)
 	rpc := raft.RPC{
 		Command:  command,
@@ -182,7 +181,7 @@ func (rb *RaftBridge) handleGrpcRequest(command interface{}, data io.Reader) (in
 	}
 	if isHeartbeat(command) && rb.handleHeartRPC != nil {
 		rb.handleHeartRPC(rpc)
-		logger.Info("handle_heartbeat")
+		//logger.Info("handle_heartbeat")
 	} else {
 		//写入请求给raft
 		rb.rpcch <- rpc
@@ -205,7 +204,7 @@ type raftPipelineAPI struct {
 // AppendEntries is used to add another request to the pipeline.
 // The send may block which is an effective form of back-pressure.
 func (r *raftPipelineAPI) AppendEntries(req *raft.AppendEntriesRequest, resp *raft.AppendEntriesResponse) (raft.AppendFuture, error) {
-	logger.Info("pipeline_append_entries", zap.Reflect("payload", req))
+	//logger.Info("pipeline_append_entries", zap.Reflect("payload", req))
 	af := &appendFuture{
 		start:   time.Now(),
 		request: req,
@@ -248,7 +247,7 @@ func (r *raftPipelineAPI) receiver() {
 			logger.Error("receiver_failer", zap.Error(err))
 		} else {
 			af.response = *decodeAppendEntriesResponse(msg)
-			logger.Info("receiver_ok", zap.Reflect("resp", af.response))
+			//logger.Info("receiver_ok", zap.Reflect("resp", af.response))
 		}
 		close(af.done)
 		r.doneCh <- af
